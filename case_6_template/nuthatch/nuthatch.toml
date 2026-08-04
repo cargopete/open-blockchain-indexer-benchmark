@@ -1,0 +1,38 @@
+[nest]
+name = "obib-case6"
+chain = "mainnet"
+chain_id = 1
+# Keyless defaults. The published number was measured against an Alchemy endpoint passed on the
+# command line (`--rpc "$RPC"`), which is what OBIB's own methodology uses - never put a key in here,
+# this file is meant to be committed.
+rpc_urls = [
+    "https://eth-pokt.nodies.app",
+    "https://eth.drpc.org",
+    "https://eth.api.onfinality.io/public",
+]
+schema_version = 2
+# OBIB case 6 stores no timestamp, so we buy no block headers. RFC-0029: that column was ~85% of
+# case 1's wall clock.
+block_timestamps = false
+
+[[contracts]]
+alias = "factory"
+address = "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f"
+start_block = 19000000
+abi = "abis/factory.json"
+events = ["PairCreated"]
+
+[[templates]]
+name = "pair"
+# The vendored ABI is trimmed to `Swap` on purpose: OBIB case 6's template handles Swap and nothing
+# else. A template has no `events` allowlist the way `[[contracts]]` does, so the ABI is the allowlist.
+# With the full pair ABI this nest decodes Sync/Mint/Burn/Transfer/Approval too - 72,201 rows against
+# the case's 35,039, which is a different workload rather than a faster one.
+abi = "abis/pair.json"
+
+[[factories]]
+watch = "factory"
+event = "PairCreated"
+child_param = "pair"
+template = "pair"
+start = 19000000

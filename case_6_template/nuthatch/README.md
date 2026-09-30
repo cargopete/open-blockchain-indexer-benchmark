@@ -44,10 +44,10 @@ Two configuration notes that materially affect the numbers, so they are stated r
 ## Running it
 
 ```sh
-cargo install --git https://github.com/nightswatchhq/nuthatch nuthatch
+curl -fsSL https://nuthatch-indexer.com/install.sh | sh   # prebuilt; a source build needs Rust 1.95.0
 
 export RPC=https://your-mainnet-endpoint/
-nuthatch bench backfill --dir . --from 19000000 --to 19010000 --runs 5 --seal-direct --rpc "$RPC"
+nuthatch bench backfill --dir . --from 19000000 --to 19010000 --runs 5 --seal-direct --window-adaptive --rpc "$RPC"
 ```
 
 `bench backfill` runs the real fetch/decode/seal path over the pinned range and prints a report
